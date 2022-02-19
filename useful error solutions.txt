@@ -1,0 +1,148 @@
+DOCKER DAEMON FAILED TO START:
+		==>	check $ journalctl -u docker
+		   	delete /etc/docker/daemon.json
+
+
+Git:
+	git init: first
+	create remote
+	git remote add (url)
+	git push origin [BRANCH_NAME]
+
+SSH:
+	on windows:	
+		$ssh-keygen ==> c/users/[name]/.ssh/id_rsa.pub
+	on linux
+		$ssh-keygen ==> /home/.ssh/id_rsa.pub
+			
+				*-*-*-*-*
+	to SSH into another VM:
+		$ssh -i [.pem key] [VM-User]@[public @IP]
+
+
+linux:
+	to kill a process running on a port:
+		$ fuser -k 8080/tcp
+	
+	to display a file content from bottom to top:
+	 	$ tac [filename]	(instead of cat)
+
+	to replace a word in a file:
+		$ sed -i -e [old-word] [new-word]
+
+Jenkins:
+	to install jenkins on docker container with mounted docker:
+	
+	==>	docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home 
+		-v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker 
+		jenkins/jenkins:lts
+	then
+		$ chmod 666 /var/run/docker.run (on both HOST and Container)
+
+Kubernetes:
+	to solve kubeadm init error ==> add the following bracket to /etc/docker/daemon.json
+		
+		{
+    			"exec-opts": ["native.cgroupdriver=systemd"]
+		}
+
+
+	To encrypt a Username or a Password and make it ready to be stored in a Secret:
+		==> $echo -n '[The Text]' | [Encryption-Type] (add '-d' to decode)
+			(like Base64, AES)
+
+
+	To delete all evicted pods (ease the load on the cluster network):
+		==> $  kubectl get po --all-namespaces -o json | jq  '.items[] | select(.status.reason!=null) |
+		       select(.status.reason | contains("Evicted")) |
+		       "kubectl delete po \(.metadata.name) -n \(.metadata.namespace)"' | xargs -n 1 bash -c
+
+	To get a list of all the resource types and their latest supported version, run the following:
+		==> $ for kind in `kubectl api-resources | tail +2 | awk '{ print $1 }'`; do kubectl explain $kind; 
+		      done | grep -e "KIND:" -e "VERSION:"
+
+	To replace a word in a yaml file:
+		==> $ sed -i 's/HOSTIP/172.17.0.8/g' externalip.yaml
+	
+	To extract IP from kubectl layout:
+		==> $ export LoadBalancerIP=$(kubectl get services/webapp1-loadbalancer-svc -o 
+		      go-template='{{(index .status.loadBalancer.ingress 0).ip}}')
+
+	To taint a specific node (restrict scheduler to place pods on it):
+		==> $ kubectl taint nodes node-name key=value:taint-effect
+
+	To extract IP address from kubernetes:
+		==> $ ip=$(kubectl get pod www -o yaml |grep podIP | awk '{split($0,a,":"); print a[2]}'); 
+		      echo $ip
+
+	To execute a command within a pod:
+		==> $ kubectl exec -it [Pod-Name] [command]
+	
+	To extract the port from kubectl:
+		==> $ export PORT=$(kubectl get svc hello-webapp -o 
+		      go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
+
+
+Prometheus:
+		to open grafana:
+			$kubectl logs pods -c [container name] (to get port)
+		then to open port on localhost:
+			$kubectl port-forward deployment/[grafana-deployment-name] [$PORT_NUMBER]
+
+		
+		to make grafana access cluster data:
+			Add Data Source from grafana, change Access from proxy to direct.
+
+Terraform:
+		to make the text looks nicer:
+			$terraform fmt
+		
+		to see if infrastructure is right:
+			$terraform validate
+
+Kompose: 
+		"Is a tool used to convert docker-compose to kubernetes or to Openshift"
+
+	To convert Docker-compose to Kubernetes:
+		==> $ kompose up
+
+	To generate YAML files from docker-compose to K8s Yaml:
+		==> $ kompose convert
+
+	To make the files support OpenShift:
+		==> $ kompose --provider openshift convert
+
+	To generate files in JSON:
+		==> $ Kompose convert -j	
+
+
+Heptio Velero:
+
+	Velero gives you tools to back up and restore your Kubernetes cluster resources and persistent 
+	volumes. Velero lets you:
+
+		Take backups of your cluster and restore in case of loss.
+		
+		Copy cluster resources across cloud providers. NOTE: Cloud volume migrations are not
+		yet supported.
+		
+		Replicate your production environment for development and testing environments.
+		
+		Velero consists of:
+			A server that runs on your cluster
+			A command-line client that runs locally
+
+
+	To backup resources with specific label:
+		==> $ velero backup create [backup-name] --selector [label(name=answer)]
+	
+	To display all backups:
+		==> $ velero backup get
+	
+	To restore a backup:
+		==> $ velero restore create --from-backup [[Backup-name]]
+	
+
+
+
+

@@ -1,0 +1,172 @@
+					*-*-* Deployment and Service and Namespace *-*-*
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-server
+spec:
+  selector:
+    matchLabels:
+      app: web-store
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: web-store
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - web-store
+            topologyKey: "kubernetes.io/hostname"
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - store
+            topologyKey: "kubernetes.io/hostname"
+    containers:
+    - name: web-app
+      image: nginx:1.16-alpine
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: yourpassword
+
+        - name: SECRET_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: [secret name]
+              key: [secret key]
+
+        - name: SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: [secret name]
+              key: [secret key]
+      ports:
+      - containerPort: 3306
+        name: mysql
+      volumeMounts:
+      - name: mysql-persistent-storage
+        mountPath: /var/lib/mysql/data
+  volumes:
+  - name: mysql-persistent-storage
+    persistentVolumeClaim:
+      claimName: claim-mysql
+
+    restartPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{name}}
+spec:
+  selector:
+    app: {{service.name}}
+{% if canary %}
+    track: {{track}}
+{% endif %}
+  ports:
+    - protocol: {{service.protocol or 'TCP'}}
+      port: {{service.port or '80'}}
+      targetPort: {{service.targetPort or '8080'}}
+  type: {{Type}}
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{Namespace}}
+
+
+					*-*-* Volumes *-*-*
+				
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: <friendly-name>
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: <server-dns/server-ip>
+    path: <shared-path>
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: claim-mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+
+					*-*-* Pods and Secrets *-*-*
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-env-pod
+spec:
+  containers:
+    - name: mycontainer
+      image: alpine:latest
+      command: ["sleep", "9999"]
+      env:
+        - name: SECRET_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: test-secret
+              key: username
+        - name: SECRET_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: test-secret
+              key: password
+  restartPolicy: Never
+---
+#	or we can add secret with volumes as files: ==>
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-vol-pod
+spec:
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: test-secret
+  containers:
+    - name: test-container
+      image: alpine:latest
+      command: ["sleep", "9999"]
+      volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/secret-volume
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secret
+type: Opaque
+data:
+  username: YWRtaW4=
+  password: YTYyZmpiZDM3OTQyZGNz
+
+					*-*-* 
+
