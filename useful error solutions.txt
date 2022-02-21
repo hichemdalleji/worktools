@@ -67,6 +67,10 @@ Kubernetes:
 	To extract IP from kubectl layout:
 		==> $ export LoadBalancerIP=$(kubectl get services/webapp1-loadbalancer-svc -o 
 		      go-template='{{(index .status.loadBalancer.ingress 0).ip}}')
+	
+	To check cluster health and events:
+		==> $ kubectl get componentstatus
+		==> $ kubectl get events --sort-by=.metadata.creationTimestamp
 
 	To taint a specific node (restrict scheduler to place pods on it):
 		==> $ kubectl taint nodes node-name key=value:taint-effect
@@ -81,6 +85,23 @@ Kubernetes:
 	To extract the port from kubectl:
 		==> $ export PORT=$(kubectl get svc hello-webapp -o 
 		      go-template='{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}')
+
+	To generate a complete dump of the cluster state:
+		==> $ kubectl cluster-info dump --all-namespaces --output-directory=cluster-state --output=json
+
+		==> $ jq '.items[].status.containerStatuses[].image' cluster-state/kube-system/pods.json
+
+
+	Every Node in a Kubernetes cluster has a Kubelet process. Within each Kubelet process is a cAdvisor. 
+	The cAdvisor continuously gathers metrics about the state of the Kubernetes resources on each Node.
+	Available through the Resource Metrics API.
+
+	To check CPU and Memory usage:
+		==> $ kubectl top [pods/nodes/...]
+
+	To solve unhealthy status error (after kubectl get componentstatus):
+		==> $ vim /etc/kubernetes/manifests/kube-scheduler.yaml 
+			then delete or comment the line: "- --port=0"
 
 
 Prometheus:
