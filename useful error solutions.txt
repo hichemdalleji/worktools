@@ -1,6 +1,7 @@
-DOCKER DAEMON FAILED TO START:
-		==>	check $ journalctl -u docker
-		   	delete /etc/docker/daemon.json
+Docker:
+	DAEMON FAILED TO START:
+		==> check $ journalctl -u docker
+		    delete /etc/docker/daemon.json
 
 
 Git:
@@ -51,6 +52,11 @@ Kubernetes:
 		==> $echo -n '[The Text]' | [Encryption-Type] (add '-d' to decode)
 			(like Base64, AES)
 
+	To expose a service on a public IP:
+		==> $ kubectl expose pod $pod -n weave --external-ip="[public IP]"/
+		      --port=[Port]/
+		      --target-port=[Target port]
+	
 
 	To delete all evicted pods (ease the load on the cluster network):
 		==> $  kubectl get po --all-namespaces -o json | jq  '.items[] | select(.status.reason!=null) |
@@ -162,6 +168,14 @@ Heptio Velero:
 	
 	To restore a backup:
 		==> $ velero restore create --from-backup [[Backup-name]]
+
+Weave Scope:
+	
+	Weave Scope lets you monitor and control your containerized microservices applications.
+	By providing a visual map of your Docker Containers, you can see the dependencies and communication
+	links between them.
+
+
 	
 
 
