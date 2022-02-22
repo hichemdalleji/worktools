@@ -109,6 +109,12 @@ Kubernetes:
 		==> $ vim /etc/kubernetes/manifests/kube-scheduler.yaml 
 			then delete or comment the line: "- --port=0"
 
+	After updating Pod images, we need to rollout the deployment and its replicas:
+		==> $ kubectl rollout status deployment [deploy-name]
+
+	To undo the reroll:
+		==> $ kubectl rollout undo status deployment [deploy-name]
+
 
 Prometheus:
 		to open grafana:
@@ -175,6 +181,9 @@ Weave Scope:
 	By providing a visual map of your Docker Containers, you can see the dependencies and communication
 	links between them.
 
+	To run weaveScope:
+		==> $ kubectl port-forward -n weave "$(kubectl get -n weave pod --selector=weave-scope-component=app 
+		      -o jsonpath='{.items..metadata.name}')" 4040
 
 	
 
