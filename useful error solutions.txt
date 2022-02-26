@@ -115,6 +115,18 @@ Kubernetes:
 	To undo the reroll:
 		==> $ kubectl rollout undo status deployment [deploy-name]
 
+ETCDCTL
+	is the CLI tool used to interact with ETCD.
+
+    API Version 2 ==> $ etcdctl backup
+		      $	etcdctl cluster-health
+		      $	etcdctl mk
+		      $	etcdctl mkdir
+		      $	etcdctl set
+    API Version 3 ==> $ etcdctl snapshot save 
+		      $ etcdctl endpoint health
+		      $	etcdctl get
+		      $	etcdctl put
 
 Prometheus:
 		to open grafana:
