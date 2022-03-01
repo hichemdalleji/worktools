@@ -68,18 +68,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{name}}
+  name: webapp-service
 spec:
+  type: NodePort
+  ports: 
+    - targetPort: 8080
+      port: 8080
+      nodePort: 30080
   selector:
-    app: {{service.name}}
-{% if canary %}
-    track: {{track}}
-{% endif %}
-  ports:
-    - protocol: {{service.protocol or 'TCP'}}
-      port: {{service.port or '80'}}
-      targetPort: {{service.targetPort or '8080'}}
-  type: {{Type}}
+    name: simple-webapp
+
 ---
 
 apiVersion: v1
@@ -168,5 +166,23 @@ data:
   username: YWRtaW4=
   password: YTYyZmpiZDM3OTQyZGNz
 
-					*-*-* 
+					*-*-* ReplicaSet *-*-*
+
+apiVersion: v1
+kind: ReplicaSet
+metadata:
+  name: replicaset-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
 
