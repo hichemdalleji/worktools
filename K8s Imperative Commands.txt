@@ -1,0 +1,30 @@
+kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
+
+
+kubectl expose pod redis --port=6379 --name=redis-service
+
+
+kubectl run httpd --image=httpd:alpine --port=80 --expose
+
+Taint:
+ 
+	kubectl taint nodes node name key= value:taint effect (NoSchedule | PreferNoSchedule | NoExecute)
+
+Toleration:
+	
+	kubectl taint nodes node1 app=myapp :NoSchedule
+
+	==> 	apiVersion: v1
+	    	kind: Pod
+		metadata:
+		  name: app-name
+		spec:
+		  containers:
+		  - name: cont-name
+		    image: image-name
+		  tolerations:
+		  - key: "app"
+   		    operator: "Equal"
+    		    value: "blue"
+ 		    effect: "NoSchedule"
+

@@ -42,7 +42,7 @@ Jenkins:
 
 Kubernetes:
 	To Generate POD Manifest YAML file:
-		==> $ kubectl run nginx --image=nginx --dry-run=client -o yaml
+		==> $ kubectl create deployment nginx --image=nginx --dry-run=client -o yaml > nginx-deployment.yaml
 	
 
 	to solve kubeadm init error ==> add the following bracket to /etc/docker/daemon.json

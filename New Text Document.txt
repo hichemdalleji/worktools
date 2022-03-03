@@ -1,0 +1,11 @@
+Deployment:
+	kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
+
+Service:
+	kubectl expose pod redis --port=6379 --name=redis-service
+
+Pod with expose:
+	kubectl run httpd --image=httpd:alpine --port=80 --expose
+
+Generate YAML:
+	kubectl create deployment nginx --image=nginx --dry-run=client -o yaml > nginx-deployment.yaml
