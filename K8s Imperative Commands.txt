@@ -28,3 +28,17 @@ Toleration:
     		    value: "blue"
  		    effect: "NoSchedule"
 
+
+Node maintenance:
+	
+	1- Drain a node from pods:
+		$ kubectl drain node01 --ignore-daemonsets
+
+	3- mark the node unscheduable:
+		$ kubectl cordon [node]
+
+	3- uncordon the node after maintenance:
+		$ kubectl uncordon node01
+
+
+
