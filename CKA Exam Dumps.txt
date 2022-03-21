@@ -1,0 +1,4 @@
+https://gist.github.com/texasdave2/8f4ce19a467180b6e3a02d7be0c765e7
+
+https://k21academy.com/docker-kubernetes/certified-kubernetes-administrator-cka-exam/#:~:text=The%20exam%20consists%20of%20around,the%20exam%20is%202%20hours.
+
