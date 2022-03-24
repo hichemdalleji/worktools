@@ -40,5 +40,10 @@ Node maintenance:
 	3- uncordon the node after maintenance:
 		$ kubectl uncordon node01
 
+Horizontal Autoscaling:
+
+	kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+
+
 
 
