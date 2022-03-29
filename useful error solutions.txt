@@ -30,6 +30,11 @@ linux:
 
 	to replace a word in a file:
 		$ sed -i -e [old-word] [new-word]
+	
+	to get the number of an output lines:
+		$ [command] | wc -l
+   	    or 
+		$ [command] -o json | jq '.items | length' 
 
 Jenkins:
 	to install jenkins on docker container with mounted docker:
@@ -41,6 +46,10 @@ Jenkins:
 		$ chmod 666 /var/run/docker.run (on both HOST and Container)
 
 Kubernetes:
+
+	TO Get the API groups and resource names:
+		==> $ kubectl api-resources
+
 	To Generate POD Manifest YAML file:
 		==> $ kubectl create deployment nginx --image=nginx --dry-run=client -o yaml > nginx-deployment.yaml
 	

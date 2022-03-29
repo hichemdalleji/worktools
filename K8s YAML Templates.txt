@@ -33,30 +33,31 @@ spec:
                 values:
                 - store
             topologyKey: "kubernetes.io/hostname"
-    containers:
-    - name: web-app
-      image: nginx:1.16-alpine
-      env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: yourpassword
+      serviceAccountName: dashboard-sa
+      containers:
+      - name: web-app
+        image: nginx:1.16-alpine
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: yourpassword
 
-        - name: SECRET_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: [secret name]
-              key: [secret key]
-
-        - name: SECRET_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: [secret name]
-              key: [secret key]
-      ports:
-      - containerPort: 3306
-        name: mysql
-      volumeMounts:
-      - name: mysql-persistent-storage
-        mountPath: /var/lib/mysql/data
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: [secret name]
+                key: [secret key]
+  
+          - name: SECRET_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: [secret name]
+                key: [secret key]
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql/data
   volumes:
   - name: mysql-persistent-storage
     persistentVolumeClaim:
@@ -290,7 +291,7 @@ spec:
     - protocol: TCP
       port: 5978
 
-					*-*-* RBAC Roles and RoleBindings *-*-*
+					*-*-* RBAC Roles & RoleBindings *-*-*
 
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -314,6 +315,31 @@ subjects:
 roleRef:
   kind: Role
   name: developer
+  apiGroup: rbac.authorization.k8s.io
+
+					*-*-* CLusterRole & ClusterRoleBinding *-*-*
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: node-admin
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "watch", "list", "create", "delete"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: michelle-binding
+subjects:
+- kind: User
+  name: michelle
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: node-admin
   apiGroup: rbac.authorization.k8s.io
 
 
