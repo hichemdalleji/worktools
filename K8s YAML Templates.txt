@@ -87,7 +87,7 @@ metadata:
   name: {{Namespace}}
 
 
-					*-*-* Volumes *-*-*
+					*-*-* PersistantVolumes & PersistantVolumeClaim *-*-*
 				
 apiVersion: v1
 kind: PersistentVolume
@@ -138,6 +138,10 @@ spec:
               name: test-secret
               key: password
   restartPolicy: Never
+  volumes:
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: myclaim
 ---
 #	or we can add secret with volumes as files: ==>
 
