@@ -115,6 +115,21 @@ spec:
     requests:
       storage: 3Gi
 
+					*-*-* StorageClass *-*-*
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: standard
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp3
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+mountOptions:
+  - debug
+volumeBindingMode: Immediate
+
 					*-*-* Pods and Secrets *-*-*
 
 apiVersion: v1
