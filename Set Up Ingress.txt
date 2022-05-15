@@ -1,0 +1,17 @@
+
+						Ingress Controller
+
+1- Set up ingress controller deployment:
+
+2- add NGINX ConfigMap
+
+3- create NodePort service for NGINX deployment
+
+4- create serviceAccount with Roles and RoleBindings
+
+
+
+						Ingress Resource
+
+	==> 	Ingress Resource is a set of rules applied on the Ingress Controller
+
