@@ -1,17 +1,157 @@
 
 						Ingress Controller
 
-1- Set up ingress controller deployment:
+			1- Create ingress specific namespace
 
-2- add NGINX ConfigMap
+			2- add NGINX ConfigMap
 
-3- create NodePort service for NGINX deployment
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+  namespace: ingress-space
+	
+			3- Create Role and RoleBinding for serviceAccount
 
-4- create serviceAccount with Roles and RoleBindings
+			4- Set up ingress controller deployment:
 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-controller
+  namespace: ingress-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nginx-ingress
+  template:
+    metadata:
+      labels:
+        name: nginx-ingress
+    spec:
+      serviceAccountName: ingress-serviceaccount
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+          args:
+            - /nginx-ingress-controller
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+            - --default-backend-service=app-space/default-http-backend
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+
+
+			5- create NodePort service for NGINX deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress
+  namespace: ingress-space
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    nodePort: 30080
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    name: nginx-ingress
+
+			6- create serviceAccount with Roles and RoleBindings
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ingress-serviceaccount
+  namespace: ingress-space
+secrets:
+- name: ingress-serviceaccount-token-4zskc
+
+		==> it is better to have it in HELM Chart
 
 
 						Ingress Resource
 
 	==> 	Ingress Resource is a set of rules applied on the Ingress Controller
 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: ingress-wear-watch
+  namespace: app-space
+spec:
+  tls:
+  - hosts:
+    - host1.domain.ext
+    - host2.domain.ext
+    secretName: hello-kubernetes-tls
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: wear-service
+            port:
+              number: 8080
+        path: /wear
+        pathType: Prefix
+      - backend:
+          service:
+            name: video-service
+            port:
+              number: 8080
+        path: /watch
+        pathType: Prefix
+      - backend:
+          service:
+            name: food-service
+            port:
+              number: 8080
+        path: /eat
+        pathType: Prefix
+      - backend:
+          service:
+            name: pay-service.critical-space.service
+            port:
+              number: 8282
+        path: /pay
+        pathType: Prefix
+status:
+  loadBalancer:
+    ingress:
+    - ip:
+      10.102.73.228
+
+---  ANOTHER WAY TO DO IT ==>
+
+spec:
+  rules:
+  - host: rewrite.bar.com
+    http:
+      paths:
+      - backend:
+          serviceName: http-svc
+          servicePort: 80
+        path: /something(/|$)(.*)
