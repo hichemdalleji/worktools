@@ -1,0 +1,39 @@
+						Uncommitted Changes
+
+
+1- Discard all local changes:
+
+	==> $ git restore [file_name]
+
+2- Restore a deleted file:
+
+	==> $ git restore [file_name]
+
+3- Discard chunks/lines of a file:
+
+	==> $ git restore -p [file_name] 
+	then choose the specific one you want to discard: y
+
+
+4- Discard all local changes:
+
+	==> $ git restore .
+
+		
+						Committed Changes
+
+5- Fix the last commit:
+
+	==> $ git commit --amend -m "[new_message]" 
+		or to add a file:
+	    $ git add [file_name]
+	    $ git commit --amend --no-edit
+
+6- Revert a commit in the middle (Not Last):
+  	NB: Revert= create a new commit that corrects a previous one.
+	==> $ git revert <commit_hash>
+
+7- Reset to an old commit:
+	NB: Reset= delete all new commits after the specific commit.
+	==> $ git reset --hard <commit_hash> (or --mixed to keep changes)
+

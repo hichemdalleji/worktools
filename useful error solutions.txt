@@ -127,6 +127,8 @@ Kubernetes:
 
 	To undo the reroll:
 		==> $ kubectl rollout undo status deployment [deploy-name]
+	Copy file from local machine to pod:
+		==> $ kubectl cp /path/to/file my-pod:/path/to/file
 
 ETCDCTL
 	is the CLI tool used to interact with ETCD.

@@ -1,0 +1,25 @@
+Merge conflicts:
+	git mergetool to open files
+		Then
+
+	 ╔═══════╦══════╦════════╗
+ 	 ║       ║      ║        ║
+ 	 ║ LOCAL ║ BASE ║ REMOTE ║
+ 	 ║       ║      ║        ║
+	 ╠═══════╩══════╩════════╣
+ 	 ║                       ║
+ 	 ║        MERGED         ║
+ 	 ║                       ║
+ 	 ╚═══════════════════════╝
+	:diffg RE ==> choose remote
+	:diffg BA ==> choose base
+	:diffg LO ==> choose local
+
+	:wqa	  ==> save
+	git clean ==> Remove extra files (e.g. *.orig) created by diff tool
+
+
+Rebase:
+
+	after rebasing ==> $ git rebase --continue
+
