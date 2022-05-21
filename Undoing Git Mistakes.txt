@@ -1,4 +1,4 @@
-						Uncommitted Changes
+						_Uncommitted Changes_
 
 
 1- Discard all local changes:
@@ -20,7 +20,7 @@
 	==> $ git restore .
 
 		
-						Committed Changes
+						_Committed Changes_
 
 5- Fix the last commit:
 
