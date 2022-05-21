@@ -22,4 +22,5 @@ Merge conflicts:
 Rebase:
 
 	after rebasing ==> $ git rebase --continue
+	to push ==> add -f or --force flag
 

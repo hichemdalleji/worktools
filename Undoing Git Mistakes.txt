@@ -19,6 +19,8 @@
 
 	==> $ git restore .
 
+
+
 		
 						_Committed Changes_
 
@@ -36,4 +38,52 @@
 7- Reset to an old commit:
 	NB: Reset= delete all new commits after the specific commit.
 	==> $ git reset --hard <commit_hash> (or --mixed to keep changes)
+
+8- Reset a file to an old commit:
+
+	==> $ git restore --source <commit_hash> [file_name]	
+
+9- Recover deleted commits:
+	NB: RefLog is a journal that logs every movement of the HEAD pointer
+	==> $ git reflog
+	==> $ git branch [new_branch] <commit_hash>
+
+10- Recover a deleted branch:
+	==> $ git reflog
+	==> $ git branch [deleted_branch] <commit_hash>
+
+11- Move a commit to a new branch:
+
+	==> $ git branch [branch_name]
+	==> $ git reset --hard HEAD~1		 (on master)
+
+12- Move a commit to a different branch:
+
+	==> $ git checkout [branch_name]
+	==> $ git cherry-pick <commit_hash>
+	==> $ git checkout master
+	==> $ git reset --hard HEAD~1
+
+13- Edit old commit message:
+	
+	==> $ git rebase -i HEAD~[n]
+		Then use reword option
+
+14- Delete old commits:
+	==> $ git rebase -i HEAD~[n]
+		Then use drop option
+
+15- Squash multiple commits into one:
+	==> $ git rebase -i HEAD~[n]
+		Then use squash option
+
+	NB: the squash options combines commit with the above commits (newer ones).
+
+16- Add a change into an old commit:
+	==> $ git commit --fixup <commit_hash>
+	    $ git rebase -i HEAD~[n] --autosquash
+
+17- Split/Edit an old commit:
+	==> $ git 
+
 
