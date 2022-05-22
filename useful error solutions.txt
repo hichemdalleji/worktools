@@ -2,6 +2,9 @@ Docker:
 	DAEMON FAILED TO START:
 		==> check $ journalctl -u docker
 		    delete /etc/docker/daemon.json
+		
+	Inspect Docker image layers:
+		==> $ docker history --human --format "{{.CreatedBy}}: {{.Size}}" [image_name]
 
 
 Git:

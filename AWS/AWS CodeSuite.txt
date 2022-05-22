@@ -1,0 +1,9 @@
+			
+			
+		CodeCommit:
+Initiate repo:
+	create remote repo
+	IAM permission to user
+	generate HTTPS credentials for codecommit ==>IAM
+	install python,pip and AWS Cli
+	==> $ git clone {repo_URL}
