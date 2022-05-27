@@ -155,6 +155,9 @@ Prometheus:
 		
 		to make grafana access cluster data:
 			Add Data Source from grafana, change Access from proxy to direct.
+		to solve the node-exporter error (directory issue):
+			$ kubectl patch ds [Your_Prometheus_Daemonset_Name] --type "json" -p '[{"op": "remove", "path" : "/spec/template/spec/containers/0/volumeMounts/2/mountPropagation"}]'
+
 
 Terraform:
 		to make the text looks nicer:
